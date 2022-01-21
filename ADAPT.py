@@ -49,7 +49,7 @@ def printcommand():
 
 submitButton =TK.Button(frame,
                         text = "Submit",
-                        command = printcommand)
+                        command = runscript)
 
 OUlbl.pack()
 OU.pack()

@@ -1,10 +1,7 @@
 ﻿
+$Creds = Get-Credential
 $OUPath = $args[0]
-$Username = $args[1]
-$PWD = $args[2]
-$Share = $args[3]
-
-$Creds = New-Object System.Management.Automation.PSCredential $Username,$PWD
+$Share = $args[1]
 
 $GatherHH = {
     

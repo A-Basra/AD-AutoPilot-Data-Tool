@@ -19,6 +19,8 @@ SharePath = TK.Text(frame,
                     width = 50,)
 
 
+Output = ScrolledText(frame, height='10', width='45', wrap="word", text="")
+
 def getInput(txt):
     inp =txt.get(1.0, 'end-1c')
     return inp
@@ -28,16 +30,22 @@ ShareInput = getInput(SharePath)
 
 PSScript = "PowerShell -ExecutionPolicy ByPass -NoProfile -File .\ADAPT.ps1 -Command" + " " + '"& {Start-Process PowerShell' + " " + "-ArgumentList'" + " " + '-File .\ADAPT.ps1' + " " + OUInput + " " + ShareInput + " " + " -Verb RunAs}"
 
-def runscript():
-    output = subprocess.check_output(["powershell", PSScript])
-    Output.config(text="ouput")
 
+PSScript = "PowerShell -ExecutionPolicy ByPass -NoProfile -File .\ADAPT.ps1 -Command" + " " + '"& {Start-Process PowerShell' + " " + "-ArgumentList'" + " " + '-File .\ADAPT.ps1' + " " + '"OU=PPA, OU=Locations, DC=HighfieldSCH, DC=local"' + " " + "'\\\Hfcurr01\Setups'" + " " + " -Verb RunAs}"
+
+
+def runscript():
+    try:
+        output = subprocess.check_output(["powershell", PSScript])
+        Output.config(text=output)
+    except subprocess.CalledProcessError as e:
+        error = "command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output)
+        Output.config(text=error)
+        raise RuntimeError(error)
 
 submitButton =TK.Button(frame,
                         text = "Submit",
                         command = runscript())
-
-Output = ScrolledText(frame, height='10', width='45', wrap="word", text="")
 
 OUlbl.pack()
 OU.pack()

@@ -1,6 +1,6 @@
 from textwrap import wrap
 import tkinter as TK
-import subprocess, sys
+import subprocess, sys, os
 from tkinter.scrolledtext import *
 
 frame = TK.Tk()
@@ -28,10 +28,11 @@ def runscript():
     try:
         OUInput = OU.get(1.0, 'end-1c')
         ShareInput = SharePath.get(1.0, 'end-1c')
-        PSScript = "PowerShell -ExecutionPolicy ByPass -NoProfile -File .\ADAPT.ps1 -Command" + " " + '"& {Start-Process PowerShell' + " " + "-ArgumentList'" + " " + '-File .\ADAPT.ps1' + " " + OUInput + " " + ShareInput + " " + " -Verb RunAs}"
-        script = subprocess.Popen(["powershell", PSScript], stdout=subprocess.PIPE)
-        stdout = script.communicate()[0]
-        Output.insert(TK.INSERT, 'STDOUT:{}'.format(stdout))
+        PSScript = "PowerShell -ExecutionPolicy ByPass -NoProfile -File .\ADAPT.ps1 -Command" + " " + '"& {Start-Process PowerShell' + " " + "-ArgumentList'" + ' ' + '-File .\ADAPT.ps1' + ' "' + OUInput + '" "' + ShareInput + '" ' + " -Verb RunAs}"
+        Output.insert(TK.INSERT,PSScript)
+        stdout = os.popen(PSScript)
+        stdout
+        Output.insert(TK.INSERT, stdout)
 
 
     except subprocess.CalledProcessError as e:

@@ -29,10 +29,11 @@ def runscript():
         OUInput = OU.get(1.0, 'end-1c')
         ShareInput = SharePath.get(1.0, 'end-1c')
         PSScript = "PowerShell -ExecutionPolicy ByPass -NoProfile -File .\ADAPT.ps1 -Command" + " " + '"& {Start-Process PowerShell' + " " + "-ArgumentList'" + " " + '-File .\ADAPT.ps1' + " " + OUInput + " " + ShareInput + " " + " -Verb RunAs}"
-        popen = subprocess.Popen("powershell", PSScript)
-        for stdout_line in iter(popen.stdout.readline, ""):
-            Output.insert(TK.INSERT, stdout_line )
-        popen.stdout.close()
+        script = subprocess.Popen(["powershell", PSScript], stdout=subprocess.PIPE)
+        stdout = script.communicate()[0]
+        Output.insert(TK.INSERT, 'STDOUT:{}'.format(stdout))
+
+
     except subprocess.CalledProcessError as e:
         error = "command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output)
         Output.config(text=error)
